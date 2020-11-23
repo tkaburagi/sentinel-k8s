@@ -1,0 +1,20 @@
+import "tfplan/v2" as tfplan
+
+allK8sDeplyoments = filter tfplan.resource_changes as _, resource_changes {
+    resource_changes.type is "kubernetes_deployment"
+}
+
+validate_probe = rule {
+    all allK8sDeplyoments as _, d {
+        //d.change.actions contains "update"
+        all d.change.after.spec as _, spec {
+            all spec.strategy as _, strategy {
+                strategy.type  contains "RollingUpdate"
+            }
+        }
+    }
+}
+
+main = rule {
+    validate_probe
+}
