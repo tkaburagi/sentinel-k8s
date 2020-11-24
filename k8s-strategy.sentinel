@@ -6,6 +6,10 @@ allK8sDeplyoments = filter tfplan.resource_changes as _, resource_changes {
 
 validate_strategy = rule {
     all allK8sDeplyoments as _, d {
+          if d.destroy and not d.requires_new {
+                print("Skipping resource", address, "that is being destroyed.)
+                continue
+            }
         //d.change.actions contains "update"
         all d.change.after.spec as _, spec {
             all spec.strategy as _, strategy {
