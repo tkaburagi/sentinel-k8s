@@ -4,7 +4,7 @@ allK8sDeplyoments = filter tfplan.resource_changes as _, resource_changes {
     resource_changes.type is "kubernetes_deployment"
 }
 
-validate_probe = rule {
+validate_strategy = rule {
     all allK8sDeplyoments as _, d {
         //d.change.actions contains "update"
         all d.change.after.spec as _, spec {
@@ -16,5 +16,5 @@ validate_probe = rule {
 }
 
 main = rule {
-    validate_probe
+    validate_strategy
 }
